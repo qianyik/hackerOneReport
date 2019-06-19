@@ -67,7 +67,7 @@ app.post("/api/reports", (req, res) => {
 app.get("/api/reports/:id", (req, res) => {
     db.collection(REPORTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, (err, doc) => {
         if (err) {
-            handleError(res, err.message, "Failed to get contact");
+            handleError(res, err.message, "Failed to get report");
         } else {
             res.status(200).json(doc);
         }
@@ -81,7 +81,7 @@ app.put("/api/reports/:id", (req, res) => {
     db.collection(REPORTS_COLLECTION).updateOne({ _id: new ObjectID(req.params.id) }, {$set: updateDoc}, (err, doc) => {
         if (err) {
             console.log(updateDoc);
-            handleError(res, err.message, "Failed to update contact");
+            handleError(res, err.message, "Failed to update report");
         } else {
             updateDoc._id = req.params.id;
             res.status(200).json(updateDoc);
@@ -92,7 +92,7 @@ app.put("/api/reports/:id", (req, res) => {
 app.delete("/api/reports/:id", (req, res) => {
     db.collection(REPORTS_COLLECTION).deleteOne({ _id: new ObjectID(req.params.id) }, (err, result) => {
         if (err) {
-            handleError(res, err.message, "Failed to delete contact");
+            handleError(res, err.message, "Failed to delete report");
         } else {
             res.status(200).json(req.params.id);
         }
