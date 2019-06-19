@@ -12,7 +12,6 @@ app.use(bodyParser.json());
 var db;
 var loca_db_uri = "mongodb://localhost:27017/test";
 
-// Connect to the database before starting the application server.
 mongodb.MongoClient.connect(process.env.MONGODB_URI || loca_db_uri, { useNewUrlParser: true }, function (err, client) {
     if (err) {
         console.log(err);
@@ -37,11 +36,6 @@ function handleError(res, reason, message, code) {
     res.status(code || 500).json({ "error": message });
 }
 
-/*  "/api/reports"
- *    GET: finds all reports
- *    POST: creates a new report
- */
-
 app.get("/api/reports", function (req, res) {
     db.collection(REPORTS_COLLECTION).find({}).toArray(function (err, docs) {
         if (err) {
@@ -54,10 +48,10 @@ app.get("/api/reports", function (req, res) {
 
 app.post("/api/reports", function (req, res) {
     var newReport = req.body;
-    newReport.createDate = new Date();
+    newReport.createDate = new Date().getTime();
 
-    if (!req.body.name) {
-        handleError(res, "Invalid user input", "Must provide a name.", 400);
+    if (!req.body.title) {
+        handleError(res, "Invalid user input", "Must provide a title.", 400);
     } else {
         db.collection(REPORTS_COLLECTION).insertOne(newReport, function (err, doc) {
             if (err) {
@@ -68,12 +62,6 @@ app.post("/api/reports", function (req, res) {
         });
     }
 });
-
-/*  "/api/reports/:id"
- *    GET: find report by id
- *    PUT: update report by id
- *    DELETE: deletes report by id
- */
 
 app.get("/api/reports/:id", function (req, res) {
     db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function (err, doc) {
