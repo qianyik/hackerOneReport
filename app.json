@@ -1,0 +1,6 @@
+{
+    "name": "ReckerOne Report",
+    "description": "Sample REST API for HackerOne Report",
+    "repository": "https://git.heroku.com/infinite-ridge-30939",
+    "MONGODB_URI": "mongodb://heroku_cggnb8nz:mhkjhlr7m347eom4ckmvntt4oj@ds261302.mlab.com:61302/heroku_cggnb8nz"
+  }
