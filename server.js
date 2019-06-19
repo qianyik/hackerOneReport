@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 var db;
 var loca_db_uri = "mongodb://localhost:27017/test";
 
-mongodb.MongoClient.connect(process.env.MONGODB_URI || loca_db_uri, { useNewUrlParser: true }, function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || loca_db_uri, { useNewUrlParser: true }, (err, client) => {
     if (err) {
         console.log(err);
         process.exit(1);
@@ -23,7 +23,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || loca_db_uri, { useNewUrlP
     console.log("Database connection ready");
 
     // Initialize the app.
-    var server = app.listen(process.env.PORT || 8080, function () {
+    var server = app.listen(process.env.PORT || 8080, () => {
         var port = server.address().port;
         console.log("App now running on port", port);
     });
@@ -36,8 +36,8 @@ function handleError(res, reason, message, code) {
     res.status(code || 500).json({ "error": message });
 }
 
-app.get("/api/reports", function (req, res) {
-    db.collection(REPORTS_COLLECTION).find({}).toArray(function (err, docs) {
+app.get("/api/reports", (req, res) => {
+    db.collection(REPORTS_COLLECTION).find({}).toArray((err, docs) => {
         if (err) {
             handleError(res, err.message, "Failed to get reports.");
         } else {
@@ -46,14 +46,15 @@ app.get("/api/reports", function (req, res) {
     });
 });
 
-app.post("/api/reports", function (req, res) {
+app.post("/api/reports", (req, res) => {
     var newReport = req.body;
     newReport.createDate = new Date().getTime();
 
     if (!req.body.title) {
         handleError(res, "Invalid user input", "Must provide a title.", 400);
     } else {
-        db.collection(REPORTS_COLLECTION).insertOne(newReport, function (err, doc) {
+        db.collection(REPORTS_COLLECTION).insertOne(newReport, (err, doc) => {
+            console.log(newReport);
             if (err) {
                 handleError(res, err.message, "Failed to create new report.");
             } else {
@@ -63,8 +64,8 @@ app.post("/api/reports", function (req, res) {
     }
 });
 
-app.get("/api/reports/:id", function (req, res) {
-    db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params._id) }, function (err, doc) {
+app.get("/api/reports/:id", (req, res) => {
+    db.collection(REPORTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, (err, doc) => {
         if (err) {
             handleError(res, err.message, "Failed to get contact");
         } else {
@@ -73,12 +74,13 @@ app.get("/api/reports/:id", function (req, res) {
     });
 });
 
-app.put("/api/reports/:id", function (req, res) {
+app.put("/api/reports/:id", (req, res) => {
     var updateDoc = req.body;
     delete updateDoc._id;
 
-    db.collection(CONTACTS_COLLECTION).updateOne({ _id: new ObjectID(req.params._id) }, updateDoc, function (err, doc) {
+    db.collection(REPORTS_COLLECTION).updateOne({ _id: new ObjectID(req.params.id) }, {$set: updateDoc}, (err, doc) => {
         if (err) {
+            console.log(updateDoc);
             handleError(res, err.message, "Failed to update contact");
         } else {
             updateDoc._id = req.params.id;
@@ -87,8 +89,8 @@ app.put("/api/reports/:id", function (req, res) {
     });
 });
 
-app.delete("/api/reports/:id", function (req, res) {
-    db.collection(CONTACTS_COLLECTION).deleteOne({ _id: new ObjectID(req.params._id) }, function (err, result) {
+app.delete("/api/reports/:id", (req, res) => {
+    db.collection(REPORTS_COLLECTION).deleteOne({ _id: new ObjectID(req.params.id) }, (err, result) => {
         if (err) {
             handleError(res, err.message, "Failed to delete contact");
         } else {
