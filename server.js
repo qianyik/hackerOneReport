@@ -1,16 +1,16 @@
-var express = require("express");
-var bodyParser = require("body-parser");
-var mongodb = require("mongodb");
-var ObjectID = mongodb.ObjectID;
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongodb = require("mongodb");
+const ObjectID = mongodb.ObjectID;
 
-var REPORTS_COLLECTION = "reports";
+const REPORTS_COLLECTION = "reports";
 
-var app = express();
+const app = express();
 app.use(bodyParser.json());
 
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
-var loca_db_uri = "mongodb://localhost:27017/test";
+const loca_db_uri = "mongodb://localhost:27017/test";
 
 mongodb.MongoClient.connect(process.env.MONGODB_URI || loca_db_uri, { useNewUrlParser: true }, (err, client) => {
     if (err) {
